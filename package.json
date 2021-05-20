@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "browserify": "^17.0.0",
+    "d3": "^6.7.0",
+    "dotenv": "^9.0.1",
+    "express": "^4.17.1",
+    "twit": "^2.2.11"
+  },
+  "name": "tweetchart",
+  "description": "��#\u0000 \u0000t\u0000w\u0000e\u0000e\u0000t\u0000c\u0000h\u0000a\u0000r\u0000t\u0000\r\u0000 \u0000",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j-newbold/tweetchart.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/j-newbold/tweetchart/issues"
+  },
+  "homepage": "https://github.com/j-newbold/tweetchart#readme"
+}

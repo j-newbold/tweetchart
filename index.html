@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <style>
+        </style>
+        <script type="javascript" src="./app.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            var myChart;
+            async function information() {
+                if (myChart) {
+                    myChart.destroy();
+                }
+                var userName = document.getElementById("query").value;
+                var url = 'http://localhost:3000/';
+                await fetch(url, 
+                { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user: {
+                            name: userName
+                        }
+                    })
+                })
+                .then(function(res) {
+                    return res.text();
+                })
+                .then(function(res) {
+                    return extractHours(res);
+                })
+                .then(function(res) {
+                    return makeHistogramArray(res);
+                })
+                .then(function(res) {
+                    return makeChart(res);
+                });            
+            }
+
+            function extractHours(tweets) {
+                let tweetData = JSON.parse(tweets).data;
+                let hourArray = [];
+                for (let i=0;i<tweetData.length;i++) {
+                    // get the hour from the tweet and add the timezone offset
+                    hourArray[i] = parseInt(tweetData[i].created_at.split(' ')[3].split(':')[0]) + parseInt(document.getElementById('timezone').value);
+                    if (hourArray[i] < 0) {
+                        hourArray[i] = hourArray[i] + 24;
+                    }
+                }
+                return hourArray;
+            }
+
+            function makeHistogramArray(hours) {
+                let countArray = new Array(24).fill(0)
+                for (let i=0;i<hours.length;i++) {
+                    countArray[hours[i]] += 1;
+                }
+                return countArray;
+            }
+
+            function makeChart(histogramArray) {
+                var ctx = document.getElementById('chart').getContext('2d');
+                myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['12a-01','01-02','02-03','03-04','04-05','05-06',
+                                    '06-07','07-08','08-09','09-10','10-11','11-12',
+                                    '12-1p','1p-2p','2p-3p','3p-4p','4p-5p','5p-6p',
+                                    '6p-7p','7p-8p','8p-9p','9p-10p','10p-11p','11p-12p'],
+                        datasets: [{
+                            label: 'Number of Tweets',
+                            data: histogramArray,
+                            borderWidth: 1,
+                            backgroundColor: 'rgb(64,224,208)'
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div>Enter a Twitter username:</div>
+        <input id="query" type="text">
+        <input type="submit" onclick="information()">
+        <div>GMT offset (hours):</div>
+        <input id="timezone" type="text" value="-4">
+        <div id="data">Data goes here</div>
+
+        <canvas id="chart" width="700" height="400"></canvas>
+
+    </body>
+
+</html>
